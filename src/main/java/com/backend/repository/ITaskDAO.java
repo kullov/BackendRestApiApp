@@ -19,6 +19,9 @@ public interface ITaskDAO extends CrudRepository<Task, Long> {
     
     public List<Task> findByEndDate(Date date);
     
+    @Query("SELECT t FROM Task t WHERE " + "t.status LIKE %:status%")
+    public List<Task> findAllByStatus(@Param("status") String status);
+    
     @Query("SELECT t FROM Task t WHERE " + "t.taskName LIKE %:taskName%")
     public List<Task> findAllByTaskName(@Param("taskName") String taskName);
     

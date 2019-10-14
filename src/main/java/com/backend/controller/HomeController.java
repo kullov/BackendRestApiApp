@@ -62,19 +62,18 @@ public class HomeController {
 	}
 	
 	@RequestMapping(
-			  value = "/api/task/find", 
+			  value = "/api/task/taskName", 
 			  method = RequestMethod.GET)
-//	@GetMapping("api/task/{taskName}")
-	public List<Task> getAllTasksByTaskName(@RequestParam(value="taskName", required = false) String taskName) {
-		List<Task> tasks = taskService.getAllByTaskName(taskName);
+	public List<Task> getByTaskName(@RequestParam(value="taskName", required = false) String taskName) {
+		List<Task> tasks = taskService.getTaskByTaskName(taskName);
 		return tasks;
 	}
 	
 	@RequestMapping(
-			  value = "/api/task/findByTaskName", 
+			  value = "/api/task/status", 
 			  method = RequestMethod.GET)
-	public List<Task> getByTaskName(@RequestParam(value="taskName", required = false) String taskName) {
-		List<Task> tasks = taskService.getTaskByTaskName(taskName);
+	public List<Task> getByStatus(@RequestParam(value="status", required = false) String status) {
+		List<Task> tasks = taskService.findAllByStatus(status);
 		return tasks;
 	}
 	
@@ -106,7 +105,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(
-			  value = "/api/task/findAllBy", 
+			  value = "/api/task/findAll", 
 			  method = RequestMethod.GET)
 //	@PostMapping("/api/task/find")
 	@ResponseBody

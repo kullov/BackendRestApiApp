@@ -26,6 +26,8 @@ public interface ITaskService {
 	
 	List<Task> findByAllParams(String taskName, Date startDate, Date endDate, String description);
 
+	List<Task> findAllByStatus(String status);
+
 //	List<Task> findAllByST(String taskName, Date startDate, Date endDate, String description);
 
 }

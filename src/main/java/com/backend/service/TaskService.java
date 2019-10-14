@@ -91,4 +91,10 @@ public class TaskService implements ITaskService {
 		return task;
 	}
 
+	@Override
+	public List<Task> findAllByStatus(String status) {
+		List<Task> task = taskDAO.findAllByStatus(status);
+		return task;
+	}
+
 }
