@@ -37,8 +37,8 @@ public class HomeController {
 		return task;
 	}
 	
-	@GetMapping("api/task/start_date/{date}")
-	public Page<Task> getAllTasksByStartDate(@RequestParam(value="date") String date, @RequestParam(value="page") int page) {
+	@GetMapping("api/task/start_date")
+	public Page<Task> getAllTasksByStartDate(@RequestParam(value="startDate") String date, @RequestParam(value="page") int page) {
 		Date d = null;
 		try {
 			d = DF.parse(date);
@@ -49,8 +49,8 @@ public class HomeController {
 		return tasks;
 	}
 
-	@GetMapping("api/task/end_date/{date}")
-	public Page<Task> getAllTasksByEndDate(@RequestParam(value="date") String date, @RequestParam(value="page") int page) {
+	@GetMapping("api/task/end_date")
+	public Page<Task> getAllTasksByEndDate(@RequestParam(value="endDate") String date, @RequestParam(value="page") int page) {
 		Date d = null;
 		try {
 			d = DF.parse(date);
