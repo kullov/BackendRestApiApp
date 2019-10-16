@@ -72,11 +72,30 @@ public class DataInit implements ApplicationRunner {
             description2 = "Delay";
             p5.setStatus(description2);
             
+            Task p6 = new Task();
+            p6.setTaskName("Learn Spring");
+            Date d16 = df.parse("19-12-2019");
+            p6.setStartDate(d16);
+            Date d26 = df.parse("21-12-2019");
+            p6.setEndDate(d26);
+            description2 = "Delay";
+            p6.setStatus(description2);
+            
+            Task p7 = new Task();
+            p7.setTaskName("Learn Spring");
+            Date d17 = df.parse("19-12-2019");
+            p7.setStartDate(d12);
+            Date d27 = df.parse("21-12-2019");
+            p7.setEndDate(d27);
+            description2 = "Delay";
+            p7.setStatus(description2);
+            
             taskDAO.save(p1);
-            taskDAO.save(p2);
             taskDAO.save(p3);
             taskDAO.save(p4);
             taskDAO.save(p5);
+            taskDAO.save(p6);
+            taskDAO.save(p7);
         }
 	}
 

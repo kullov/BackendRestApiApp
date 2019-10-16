@@ -8,6 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.domain.Task;
@@ -22,10 +25,13 @@ public class TaskService implements ITaskService {
 	private ITaskDAO taskDAO;
 	
 	@Override
-	public List<Task> getAllTasks() {
-		List<Task> list = new ArrayList<>();
-		taskDAO.findAll().forEach(e -> list.add(e));
-		return list;
+	public Page<Task> getAllTasks(int pageN, int limit) {
+//		List<Task> list = new ArrayList<>();
+//		taskDAO.findAll().forEach(e -> list.add(e));
+		// Lấy ra 5 user đầu tiên
+        // PageRequest.of(0,5) tương đương với lấy ra page đầu tiên, và mỗi page sẽ có 5 phần tử
+		Page<Task> page = taskDAO.findAll(PageRequest.of(pageN, limit));
+		return page;
 	}
 
 	@Override
@@ -36,7 +42,7 @@ public class TaskService implements ITaskService {
 
 	@Override
 	public boolean addTask(Task task) {
-		List<Task> list = taskDAO.findAllByTaskName(task.getTaskName());
+		List<Task> list = taskDAO.findByTaskName(task.getTaskName());
 		if (list.size() > 0) {
 			return false;
 		} else {
@@ -56,21 +62,15 @@ public class TaskService implements ITaskService {
 	}
 
 	@Override
-	public List<Task> getTaskByTaskName(String taskName) {
-		List<Task> task = taskDAO.findByTaskName(taskName);
-		return task;
+	public Page<Task> getTaskByStartDate(Date date, int page, int limit) {
+		Page<Task> tasks = taskDAO.findByStartDate(date, PageRequest.of(page, limit));
+		return tasks;
 	}
 
 	@Override
-	public List<Task> getTaskByStartDate(Date date) {
-		List<Task> task = taskDAO.findByStartDate(date);
-		return task;
-	}
-
-	@Override
-	public List<Task> getTaskByEndDate(Date date) {
-		List<Task> task = taskDAO.findByEndDate(date);
-		return task;
+	public Page<Task> getTaskByEndDate(Date date, int page, int limit) {
+		Page<Task> tasks = taskDAO.findByEndDate(date, PageRequest.of(page, limit));
+		return tasks;
 	}
 	
 //	@Override
@@ -80,20 +80,20 @@ public class TaskService implements ITaskService {
 //	}
 
 	@Override
-	public List<Task> findByAllParams(String taskName, Date startDate, Date endDate, String status) {
-		List<Task> list = taskDAO.findByAllParams(taskName, startDate, endDate, status);
+	public Page<Task> findByAllParams(String taskName, Date startDate, Date endDate, String status, int page, int limit) {
+		Page<Task> list = taskDAO.findByAllParams(taskName, startDate, endDate, status, PageRequest.of(page, limit));
 		return list;
 	}
 
 	@Override
-	public List<Task> getAllByTaskName(String taskName) {
-		List<Task> task = taskDAO.findAllByTaskName(taskName);
+	public Page<Task> getAllByTaskName(String taskName, int page, int limit) {
+		Page<Task> task = taskDAO.findAllByTaskName(taskName, PageRequest.of(page, limit));
 		return task;
 	}
 
 	@Override
-	public List<Task> findAllByStatus(String status) {
-		List<Task> task = taskDAO.findAllByStatus(status);
+	public Page<Task> findAllByStatus(String status, int page, int limit) {
+		Page<Task> task = taskDAO.findAllByStatus(status, PageRequest.of(page, limit));
 		return task;
 	}
 

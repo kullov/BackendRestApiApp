@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,19 +38,19 @@ public class HomeController {
 	}
 	
 	@GetMapping("api/task/start_date/{date}")
-	public List<Task> getAllTasksByStartDate(@PathVariable("date") String date) {
+	public Page<Task> getAllTasksByStartDate(@RequestParam(value="date") String date, @RequestParam(value="page") int page) {
 		Date d = null;
 		try {
 			d = DF.parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<Task> tasks = taskService.getTaskByStartDate(d);
+		Page<Task> tasks = taskService.getTaskByStartDate(d, page-1, 5);
 		return tasks;
 	}
 
 	@GetMapping("api/task/end_date/{date}")
-	public List<Task> getAllTasksByEndDate(@PathVariable("date") String date) {
+	public Page<Task> getAllTasksByEndDate(@RequestParam(value="date") String date, @RequestParam(value="page") int page) {
 		Date d = null;
 		try {
 			d = DF.parse(date);
@@ -57,29 +58,25 @@ public class HomeController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<Task> tasks = taskService.getTaskByEndDate(d);
+		Page<Task> tasks = taskService.getTaskByEndDate(d, page-1, 5);
 		return tasks;
 	}
 	
-	@RequestMapping(
-			  value = "/api/task/taskName", 
-			  method = RequestMethod.GET)
-	public List<Task> getByTaskName(@RequestParam(value="taskName", required = false) String taskName) {
-		List<Task> tasks = taskService.getTaskByTaskName(taskName);
+	@GetMapping("/api/task/taskName")
+	public Page<Task> getByTaskName(@RequestParam(value="taskName", required = false) String taskName, @RequestParam(value="page") int page) {
+		Page<Task> tasks = taskService.getAllByTaskName(taskName, page-1, 5);
 		return tasks;
 	}
 	
-	@RequestMapping(
-			  value = "/api/task/status", 
-			  method = RequestMethod.GET)
-	public List<Task> getByStatus(@RequestParam(value="status", required = false) String status) {
-		List<Task> tasks = taskService.findAllByStatus(status);
+	@GetMapping("/api/task/status")
+	public Page<Task> getByStatus(@RequestParam(value="status", required = false) String status, @RequestParam(value="page") int page) {
+		Page<Task> tasks = taskService.findAllByStatus(status, page-1, 5);
 		return tasks;
 	}
 	
 	@GetMapping("api/task/all")
-	public List<Task> getAllTasks() {
-		List<Task> list = taskService.getAllTasks();
+	public Page<Task> getAllTasks(@RequestParam(value="page") int page) {
+		Page<Task> list = taskService.getAllTasks(page-1, 5);
 		return list;
 	}
 	
@@ -94,23 +91,18 @@ public class HomeController {
 	}
 	
 	@PutMapping("api/task/update/{id}")
-	public Task updateArticle(@RequestBody Task task) {
+	public Task updateTask(@RequestBody Task task) {
 		taskService.updateTask(task);
 		return task;
 	}
 	
 	@DeleteMapping("api/task/delete/{id}")
-	public void deleteArticle(@PathVariable("id") Integer id) {
+	public void deleteTask(@PathVariable("id") Integer id) {
 		taskService.deleteTask(id);
 	}
 	
-	@RequestMapping(
-			  value = "/api/task/findAll", 
-			  method = RequestMethod.GET)
-//	@PostMapping("/api/task/find")
-	@ResponseBody
-//	@PostMapping("api/task/findBy/name={taskName}/startDate={startDate}/endDate={endDate}/status={status}")
-	public List<Task> findAllBy( @RequestParam(value="taskName", required = false) String taskName,  @RequestParam(value="startDate", required = false) String startDate, @RequestParam(value="endDate", required = false) String endDate, @RequestParam(value="status", required = false) String status) {
+	@GetMapping("/api/task/findAll")
+	public Page<Task> findAllBy( @RequestParam(value="taskName", required = false) String taskName,  @RequestParam(value="startDate", required = false) String startDate, @RequestParam(value="endDate", required = false) String endDate, @RequestParam(value="status", required = false) String status, @RequestParam(value="page") int page) {
 		Date startD = null;
 		Date endD = null;
 		try {
@@ -123,7 +115,7 @@ public class HomeController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		List<Task> list = taskService.findByAllParams(taskName, startD, endD, status);
+		Page<Task> list = taskService.findByAllParams(taskName, startD, endD, status, page-1, 5);
 		return list;
 	}
  
