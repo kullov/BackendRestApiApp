@@ -4,10 +4,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,15 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.backend.domain.Task;
 import com.backend.service.ITaskService;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-public class HomeController {
+public class TaskController {
 	
 	@Autowired
 	private ITaskService taskService;
@@ -74,12 +77,14 @@ public class HomeController {
 		return tasks;
 	}
 	
+	@PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
 	@GetMapping("api/task/all")
 	public Page<Task> getAllTasks(@RequestParam(value="page") int page) {
 		Page<Task> list = taskService.getAllTasks(page-1, 5);
 		return list;
 	}
 	
+	@PreAuthorize("hasAuthority('USER') or hasAuthority('ADMIN')")
 	@PostMapping("api/task/create")
 	public Task addTask( @RequestBody Task task, UriComponentsBuilder builder) {
 		boolean flag = taskService.addTask(task);

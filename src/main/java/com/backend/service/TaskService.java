@@ -1,6 +1,5 @@
 package com.backend.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.backend.domain.Task;
@@ -26,8 +24,6 @@ public class TaskService implements ITaskService {
 	
 	@Override
 	public Page<Task> getAllTasks(int pageN, int limit) {
-//		List<Task> list = new ArrayList<>();
-//		taskDAO.findAll().forEach(e -> list.add(e));
 		// Lấy ra 5 user đầu tiên
         // PageRequest.of(0,5) tương đương với lấy ra page đầu tiên, và mỗi page sẽ có 5 phần tử
 		Page<Task> page = taskDAO.findAll(PageRequest.of(pageN, limit));

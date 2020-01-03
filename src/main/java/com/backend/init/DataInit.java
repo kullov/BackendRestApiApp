@@ -2,30 +2,74 @@ package com.backend.init;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import com.backend.domain.AppRole;
+import com.backend.domain.AppUser;
 import com.backend.domain.Task;
+import com.backend.repository.IRoleDAO;
 import com.backend.repository.ITaskDAO;
+import com.backend.repository.IUserDAO;
+import com.backend.service.IUserService;
 
 @Component
 public class DataInit implements ApplicationRunner {
 	private ITaskDAO taskDAO;
+	private IUserDAO userDAO;
+	private IRoleDAO roleDAO;
+	
+	@Autowired
+	IUserService userService;
+	
 	private static final DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 	
 	@Autowired
-    public DataInit(ITaskDAO taskDAO) {
+    public DataInit(ITaskDAO taskDAO, IUserDAO userDAO, IRoleDAO roleDAO) {
         this.taskDAO = taskDAO;
+        this.userDAO = userDAO;
+        this.roleDAO = roleDAO;
     }
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		long count = taskDAO.count();
-		String description1, description2; 
+		long countUser = userDAO.count();
+		long countRole = roleDAO.count();
+		String description1, description2;
+		if (countRole == 0) {
+			AppRole userRole = new AppRole();
+			userRole.setRoleName("USER");
+			roleDAO.save(userRole);
+			AppRole adminRole = new AppRole();
+			adminRole.setRoleName("ADMIN");
+			roleDAO.save(adminRole);
+		}
+//		System.out.println(roleDAO.findAll());
+		if (countUser == 0) {
+			AppUser user = new AppUser();
+			user.setUserName("admin");
+			user.setPassword("123456");
+			user.setEmail("abc@gmail.com");
+			boolean a = userService.addUser(user, "ADMIN");
+			
+			AppUser user2 = new AppUser();
+			user2.setUserName("nga123");
+			user2.setPassword("123456");
+			boolean b = userService.addUser(user2, "USER");
+			
+			AppUser user3 = new AppUser();
+			user3.setUserName("user");
+			user3.setPassword("123456");
+			boolean c = userService.addUser(user3, "USER");
+		}
+		
         if (count == 0) {
             Task p1 = new Task();
             p1.setTaskName("Learn English");
@@ -97,6 +141,9 @@ public class DataInit implements ApplicationRunner {
             taskDAO.save(p6);
             taskDAO.save(p7);
         }
+        for (Task task : taskDAO.findAll()) {
+			System.out.println(task.toString());
+		}
 	}
 
 }
